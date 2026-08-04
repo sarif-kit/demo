@@ -1,0 +1,28 @@
+name: codespell
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  codespell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check spelling
+        run: pipx run codespell src/ > codespell.txt || [ $? -eq 65 ]
+      - name: Convert to SARIF
+        uses: sarif-kit/sarif-kit@v0.1.0
+        with:
+          tool: codespell
+          input: codespell.txt
+          output: codespell.sarif
+      - name: Upload to Code Scanning
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: codespell.sarif
+          category: codespell

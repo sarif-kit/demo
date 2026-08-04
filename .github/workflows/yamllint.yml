@@ -1,0 +1,28 @@
+name: yamllint
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Lint YAML
+        run: pipx run yamllint -f parsable . > yamllint.txt || [ $? -eq 1 ]
+      - name: Convert to SARIF
+        uses: sarif-kit/sarif-kit@v0.1.0
+        with:
+          tool: yamllint
+          input: yamllint.txt
+          output: yamllint.sarif
+      - name: Upload to Code Scanning
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: yamllint.sarif
+          category: yamllint

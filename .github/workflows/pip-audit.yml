@@ -1,0 +1,29 @@
+name: pip-audit
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  pip-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Audit dependencies
+        run: pipx run pip-audit -r requirements.txt -f json > pip-audit.json || true
+      - name: Convert to SARIF
+        uses: sarif-kit/sarif-kit@v0.1.0
+        with:
+          tool: pip-audit
+          input: pip-audit.json
+          output: pip-audit.sarif
+          dep-file: requirements.txt
+      - name: Upload to Code Scanning
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: pip-audit.sarif
+          category: pip-audit

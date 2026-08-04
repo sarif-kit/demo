@@ -1,0 +1,6 @@
+---
+extends: default
+
+# The workflow files are CI plumbing, not part of what this demo is showing.
+ignore: |
+  .github/

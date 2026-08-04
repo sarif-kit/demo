@@ -1,0 +1,10 @@
+---
+service:   billing
+replicas:
+- primary
+- standby
+timeout:
+retries: 3
+retries: 5
+region: "eu-west-1"
+enabled: yes

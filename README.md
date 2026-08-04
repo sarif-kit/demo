@@ -4,8 +4,8 @@ This repository is broken on purpose.
 
 It shows what [sarif-kit](https://github.com/sarif-kit/sarif-kit) does: it takes the output
 of tools that cannot emit SARIF and turns it into GitHub Code Scanning alerts. Everything
-under Security, then Code scanning, came from the workflows in `.github/workflows/`, each
-running one tool and converting its output with the sarif-kit action.
+under Security, then Code scanning, came from the workflows in `.github/workflows/`. Each
+one runs a single tool and converts its output with the sarif-kit action.
 
 ## What is wrong here, deliberately
 
@@ -42,5 +42,5 @@ find something, and you want the job to carry on to the upload rather than stop 
 scan. Each tool exits differently, so the per-tool pages in the main repository give the
 exact command for each one.
 
-Each workflow uploads under its own `category`, which is what keeps the three tools from
-overwriting each other's alerts.
+Each workflow uploads under its own `category`. Without that, the three tools overwrite
+each other's alerts.

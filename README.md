@@ -14,6 +14,7 @@ one runs a single tool and converts its output with the sarif-kit action.
 | `requirements.txt` | two long-outdated packages with published advisories | pip-audit |
 | `config/service.yaml` | duplicate key, bad indentation, loose spacing, a truthy value | yamllint |
 | `src/billing.py` | a dozen misspellings | codespell |
+| `firmware/src/main.c` | an uninitialized read, a null dereference, a buffer overrun, an unchecked scanf | pio check |
 
 Nothing here is real code. The point is the alerts, not the program.
 
@@ -25,7 +26,7 @@ Run the tool the way you already do, convert what it printed, upload the result:
 - name: Lint YAML
   run: pipx run yamllint -f parsable . > yamllint.txt || [ $? -eq 1 ]
 - name: Convert to SARIF
-  uses: sarif-kit/sarif-kit@v0.1.0
+  uses: sarif-kit/sarif-kit@v0.2.0
   with:
     tool: yamllint
     input: yamllint.txt
@@ -42,5 +43,5 @@ find something, and you want the job to carry on to the upload rather than stop 
 scan. Each tool exits differently, so the per-tool pages in the main repository give the
 exact command for each one.
 
-Each workflow uploads under its own `category`. Without that, the three tools overwrite
-each other's alerts.
+Each workflow uploads under its own `category`. Without that, the tools overwrite each
+other's alerts.

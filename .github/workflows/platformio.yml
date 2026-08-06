@@ -1,0 +1,30 @@
+name: platformio
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  platformio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # No guard here: pio check exits 0 even when it finds defects.
+      - name: Static analysis
+        run: pipx run platformio check -d firmware --json-output > pio-check.json
+      - name: Convert to SARIF
+        uses: sarif-kit/sarif-kit@v0.2.0
+        with:
+          tool: platformio
+          input: pio-check.json
+          output: platformio.sarif
+          src-root: ${{ github.workspace }}
+      - name: Upload to Code Scanning
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: platformio.sarif
+          category: platformio

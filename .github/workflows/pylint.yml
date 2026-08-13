@@ -1,0 +1,30 @@
+name: pylint
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  pylint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # --exit-zero rather than || true: pylint puts what it found in the exit code, so
+      # any finding would stop the job here, but 32 still means a usage error.
+      - name: Lint Python
+        run: pipx run pylint --exit-zero --output-format=json2 src > pylint.json
+      - name: Convert to SARIF
+        uses: sarif-kit/sarif-kit@v0.3.0
+        with:
+          tool: pylint
+          input: pylint.json
+          output: pylint.sarif
+      - name: Upload to Code Scanning
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: pylint.sarif
+          category: pylint

@@ -14,7 +14,7 @@ one runs a single tool and converts its output with the sarif-kit action.
 | `requirements.txt` | two long-outdated packages with published advisories | pip-audit |
 | `config/service.yaml` | duplicate key, bad indentation, loose spacing, a truthy value | yamllint |
 | `src/billing.py` | a dozen misspellings | codespell |
-| `src/orders.py` | an undefined name, two unused imports, a function named like a class | pylint |
+| `src/orders.py` | an undefined name, an unused import, a function named like a class | pylint |
 | `firmware/src/main.c` | an uninitialized read, a null dereference, a buffer overrun, an unchecked scanf | pio check |
 
 Nothing here is real code. The point is the alerts, not the program.
